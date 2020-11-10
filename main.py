@@ -2,23 +2,26 @@
 # -*- coding:utf-8 -*-
 
 
+# import packages
+
+# import cmd
+# import re
+# import os
+
+
 # Jack imports
 import asyncio
 import os
-import subprocess
+# import cmd
+# import re
 from read_js import Read_js
-from mysql import main1, main2, main3, main4, main5
+from mysql import MySQL, main1, main2, main3
 
 # Edan imports
 from cmd import Cmd
 from converter import Converter
 from json_loader import JsonLoader
 
-os.environ["PATH"] += os.pathsep + './wavi-master/bin'
-dir_path = os.path.dirname(os.path.realpath(__file__))
-wavi_path = os.path.join(dir_path, "wavi-master/bin")
-dot_path = os.path.join(dir_path, "Graphviz 2.44.1/bin")
-os.environ["PATH"] += os.pathsep + wavi_path + dot_path
 
 class CommandLineInterface(Cmd):
 
@@ -45,7 +48,7 @@ class CommandLineInterface(Cmd):
     def help_create_pickle(self):
         print(self.jloader.get_help_text('create_pickle'))
 
-    def do_exit(self, arg):
+    def do_exit(self):
         return True
 
     def help_exit(self):
@@ -58,10 +61,6 @@ class CommandLineInterface(Cmd):
             Read_js().check_file_type(input_file)
 
             self.con.load_data(input_file)
-
-        except IndexError:
-            print(f'You should follow the format, please try "help load_data" to find the use.')
-
         except Exception as e:
             print(e)
 
@@ -70,7 +69,8 @@ class CommandLineInterface(Cmd):
 
     def do_extract_data(self, arg):
         try:
-            self.con.visit(self.con.extract_data(self.con))
+            self.con.extract_data()
+            self.con.get_dict()
         except Exception as e:
             print(e)
 
@@ -80,7 +80,6 @@ class CommandLineInterface(Cmd):
     def do_convert_to_uml(self, arg):
         try:
             self.con.convert_to_uml()
-
         except Exception as e:
             print(e)
 
@@ -92,14 +91,8 @@ class CommandLineInterface(Cmd):
         chk = Read_js()
         chk.check_file_type(arg)
 
-    def help_read_js(self):
-        print(self.jloader.get_help_text('read_js'))
-
     def do_pwd(self, arg):
         print(os.getcwd())
-
-    def help_pwd(self):
-        print(self.jloader.get_help_text('pwd'))
 
     def do_db_connect(self, arg):
         loop = asyncio.get_event_loop()
@@ -109,85 +102,28 @@ class CommandLineInterface(Cmd):
         except Exception as e:
             print(e)
 
-    def help_db_connect(self):
-        print(self.jloader.get_help_text('db_connect'))
+        # finally:
+        #     loop.close()
 
-    def do_db_info(self, arg):
+    def do_db_btf_info(self, arg):
         loop = asyncio.get_event_loop()
         try:
             result = loop.run_until_complete(main3())
             print(result)
         except Exception as e:
             print(e)
+        # finally:
+        #     loop.close()
 
-    def help_db_info(self):
-        print(self.jloader.get_help_text('db_info'))
-
-    def do_table_select(self, arg):
-
+    def do_tb_select_all(self, arg):
+        loop = asyncio.get_event_loop()
         try:
-            raw_data = arg.split()
-            db = raw_data[0]
-
-            loop = asyncio.get_event_loop()
-
-            if db == '-a':
-                result = loop.run_until_complete(main5())
-                print(result)
-            elif db == '-m':
-                result = loop.run_until_complete(main4())
-                print(result)
-            elif db == '-i':
-                result = loop.run_until_complete(main2())
-                print(result)
-            else:
-                print(f'The table you choose is not existed in the database, please try "db_connect" to check the existed tables')
+            result = loop.run_until_complete(main2())
+            print(result)
         except Exception as e:
             print(e)
-
-    def help_table_select(self):
-        print(self.jloader.get_help_text('table_select'))
-
-    # def do_cls_info_select_all(self, arg):
-    #     loop = asyncio.get_event_loop()
-    #     try:
-    #         result = loop.run_until_complete(main2())
-    #         print(result)
-    #     except Exception as e:
-    #         print(e)
-
-    # def do_cls_mtd_select_all(self, arg):
-    #     loop = asyncio.get_event_loop()
-    #     try:
-    #         result = loop.run_until_complete(main4())
-    #         print(result)
-    #     except Exception as e:
-    #         print(e)
-
-    # def do_cls_atr_select_all(self, arg):
-    #     loop = asyncio.get_event_loop()
-    #     try:
-    #         result = loop.run_until_complete(main5())
-    #         print(result)
-    #     except Exception as e:
-    #         print(e)
-
-    def do_wavi(self, arg):
-        try:
-            raw_data = arg.split()
-            input_file = raw_data[0]
-
-            command = "wavi {0} uml-test.svg".format(input_file)
-            print("Your wavi directory is: " + wavi_path)
-            subprocess.run(command, cwd=dir_path, shell=True)
-
-        except Exception as e:
-            print(e)
-
-    def help_wavi(self):
-        print(self.jloader.get_help_text('wavi'))
-
-
+        # finally:
+        #     loop.close()
 
 if __name__ == '__main__':
     import sys
@@ -196,3 +132,47 @@ if __name__ == '__main__':
     sys_exit_code = cli.cmdloop()
     print('Exiting with code: {!r}'.format(sys_exit_code))
     sys.exit(sys_exit_code)
+
+# Jack coding area
+
+# print("hello world")
+#
+# print("testing")
+#
+# A = 1 + 2
+# print(A)
+#
+#
+# def check_file(self, input_file):
+#     """
+#     >>> a = CheckDirectory()
+#     >>> a.check_file('/Users/jimmy/py/pythonClassProject2020/ppp_cmd.py')
+#     'ppp_cmd.py'
+#     """
+#
+#     if os.path.isfile(input_file):
+#         work_dir = os.path.dirname(input_file)
+#         file = input_file[len(work_dir) + 1:]
+#
+#         return file
+#
+#     else:
+#         work_dir = input_file
+#         file = "*.py"
+#
+#         return file
+#
+# if __name__ == '__main__':
+#
+#     file1 = open(check_file("/Users/jimmy/py/pythonClassProject2020/cmd_test.py")).read()
+#     imp = re.findall(r"var\s\w+", file1, re.S)
+#     func = re.findall(r"function\sdo\w+", file1, re.S)
+#
+#     for i in func:
+#         j = i.strip('function')
+#         func_all.append(j)
+#     print(self.func_all)
+#
+#     for i in imp:
+#         j = i.strip('var')
+#         imp_arr.append(j)
