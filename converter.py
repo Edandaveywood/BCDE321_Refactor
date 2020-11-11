@@ -2,18 +2,55 @@ from esprima import parseScript
 from graphviz import Digraph, Source
 from pickler import Pickler
 from ast_visitor import AstVisitor
+from abc import ABC, abstractmethod
 
 
-class Converter:
+class ConverterBuilder(ABC):
+    @property
+    @abstractmethod
+    def uml(self):
+        pass
+
+    @abstractmethod
+    def load_data(self, input_file):
+        pass
+
+    @abstractmethod
+    def extract_data(self):
+        pass
+
+    @abstractmethod
+    def get_dict(self):
+        pass
+
+    @abstractmethod
+    def convert_to_uml(self):
+        pass
+
+    @abstractmethod
+    def make_pickle(self):
+        pass
+
+
+class Converter(ConverterBuilder):
     def __init__(self):
         self.ast = AstVisitor()
         self.input_file = None
-        self._data = None
+        self.astdata = None
         self._dict_of_elements = {}
+        self.reset()
+
+    def reset(self):
+        self._uml = Uml()
+
+    @property
+    def uml(self):
+        uml = self._uml
+        return uml
 
     def load_data(self, input_file):
         self.input_file = input_file
-        return input_file
+        self._uml.get_input_file(input_file)
 
     def extract_data(self):
         file_contents = ""
@@ -21,16 +58,16 @@ class Converter:
             with open(self.input_file, 'r') as f:
                 for line in f:
                     file_contents += line
-            data = parseScript(file_contents, delegate=self.ast)
-            self._data = data
+            self.astdata = parseScript(file_contents, delegate=self.ast)
             print('Data has been extracted')
-            return self._data
+            self._uml.get_ast_data(self.astdata)
         except Exception as e:
             print('There was an error in the JavaScript file: ' + str(e))
 
     def get_dict(self):
-        self.ast.visit(self._data)
-        self._dict_of_elements = AstVisitor.get_dict(self.ast)
+        self.ast.visit(self.astdata)
+        self._dict_of_elements = self.ast.get_dict()
+        self._uml.get_dict(self._dict_of_elements)
 
     def convert_to_uml(self):
         dot = Digraph(comment='UML Diagram')
@@ -48,14 +85,64 @@ class Converter:
                      shape="record",
                      )
         s = Source(dot.source, filename="test.gv", format="png")
-        s.view()
+        self._uml.get_uml_source(s)
 
     def make_pickle(self):
         pickle = Pickler()
         try:
             assert len(self._dict_of_elements.keys()) > 0
-            pickle.serialise(self._dict_of_elements)
+            return pickle.serialise(self._dict_of_elements)
         except FileNotFoundError as e:
             print(e)
         except AssertionError:
             print('Dictionary is empty, try loading then extracting data first')
+
+
+class Uml:
+    def __init__(self):
+        self.input_file = None
+        self.astdata = None
+        self.dict = None
+        self.umlsource = None
+        self.pickle = None
+
+    def get_input_file(self, input_file):
+        self.input_file = input_file
+        # print(self.input_file)
+
+    def get_ast_data(self, astdata):
+        self.astdata = astdata
+        # print(self.astdata)
+
+    def get_dict(self, dict_of_elements):
+        self.dict = dict_of_elements
+        # print(self.dict)
+
+    def get_uml_source(self, umlsource):
+        self.umlsource = umlsource
+        # print(self.umlsource)
+
+    def get_pickle(self, pickle):
+        self.pickle = pickle
+
+    def view_uml(self):
+        return self.umlsource.view()
+
+
+class Director:
+    def __init__(self):
+        self._conbuilder = None
+
+    @property
+    def conbuilder(self):
+        return self._conbuilder
+
+    @conbuilder.setter
+    def conbuilder(self, conbuilder: ConverterBuilder):
+        self._conbuilder = conbuilder
+
+    def build_uml(self, input_file):
+        self._conbuilder.load_data(input_file)
+        self._conbuilder.extract_data()
+        self._conbuilder.get_dict()
+        self._conbuilder.convert_to_uml()

@@ -13,9 +13,6 @@ class AstVisitor(NodeVisitor):
         self._dict_of_elements = {}
         self._index = 0
 
-    def get_dict(self):
-        return self._dict_of_elements
-
     def visit_ClassDeclaration(self, node):
         self._class_names.append(node.id.name)
         self.generic_visit(node)
@@ -56,3 +53,6 @@ class AstVisitor(NodeVisitor):
             else:
                 result += expr.right.name
             self._attributes.append(result)
+
+    def get_dict(self):
+        return self._dict_of_elements

@@ -12,3 +12,4 @@ class Pickler:
         pickle_file = open('pickle.txt', 'wb')
         pickle.dump(to_pickle, pickle_file)
         pickle_file.close()
+
