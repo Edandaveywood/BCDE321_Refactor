@@ -91,11 +91,26 @@ class Converter(ConverterBuilder):
         pickle = Pickler()
         try:
             assert len(self._dict_of_elements.keys()) > 0
-            return pickle.serialise(self._dict_of_elements)
+            pickle.serialise(self._dict_of_elements, "pickle")
+            self._uml.get_pickle(pickle.serialise(self._dict_of_elements, "pickle"))
         except FileNotFoundError as e:
             print(e)
         except AssertionError:
             print('Dictionary is empty, try loading then extracting data first')
+
+    def load_pickle(self):
+        pickle = Pickler()
+        try:
+            pickle.de_serialise()
+        except FileNotFoundError as e:
+            print(e)
+
+    def remove_pickle(self):
+        pickle = Pickler()
+        try:
+            pickle.remove_pickle()
+        except FileNotFoundError as e:
+            print(e)
 
 
 class Uml:
@@ -124,6 +139,7 @@ class Uml:
 
     def get_pickle(self, pickle):
         self.pickle = pickle
+        print(self.pickle)
 
     def view_uml(self):
         return self.umlsource.view()
@@ -146,3 +162,4 @@ class Director:
         self._conbuilder.extract_data()
         self._conbuilder.get_dict()
         self._conbuilder.convert_to_uml()
+        self._conbuilder.make_pickle()
