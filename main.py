@@ -11,7 +11,7 @@ from mysql import main1, main2, main3
 from cmd import Cmd
 from converter import Director, Converter
 from json_loader import JsonLoader
-
+from pickler import Pickler
 
 class CommandLineInterface(Cmd):
 
@@ -36,16 +36,16 @@ class CommandLineInterface(Cmd):
         print(arg, 'is an incorrect command, type help to see the command list')
 
     def do_create_pickle(self, arg):
-        self._converter.make_pickle()
+        self._converter.make_pickle(Pickler())
 
     def help_create_pickle(self):
         print(self.jloader.get_help_text('create_pickle'))
 
     def do_load_pickle(self, arg):
-        self._converter.load_pickle()
+        self._converter.load_pickle(Pickler())
 
     def do_remove_pickle(self, arg):
-        self._converter.remove_pickle()
+        self._converter.remove_pickle(Pickler())
 
     def do_exit(self, arg):
         return True

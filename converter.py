@@ -1,6 +1,6 @@
 from esprima import parseScript
 from graphviz import Digraph, Source
-from pickler import Pickler
+from pickler import PickleCreator
 from ast_visitor import AstVisitor
 from abc import ABC, abstractmethod
 
@@ -28,7 +28,7 @@ class ConverterBuilder(ABC):
         pass
 
     @abstractmethod
-    def make_pickle(self):
+    def make_pickle(self, picklecreator: PickleCreator):
         pass
 
 
@@ -87,28 +87,25 @@ class Converter(ConverterBuilder):
         s = Source(dot.source, filename="test.gv", format="png")
         self._uml.get_uml_source(s)
 
-    def make_pickle(self):
-        pickle = Pickler()
+    def make_pickle(self, picklecreator: PickleCreator):
         try:
             assert len(self._dict_of_elements.keys()) > 0
-            pickle.serialise(self._dict_of_elements, "pickle")
-            self._uml.get_pickle(pickle.serialise(self._dict_of_elements, "pickle"))
+            picklecreator.serialise_pickle(self._dict_of_elements, "pickle")
+            self._uml.get_pickle(picklecreator.serialise_pickle(self._dict_of_elements, "pickle"))
         except FileNotFoundError as e:
             print(e)
         except AssertionError:
             print('Dictionary is empty, try loading then extracting data first')
 
-    def load_pickle(self):
-        pickle = Pickler()
+    def load_pickle(self, picklecreator: PickleCreator):
         try:
-            pickle.de_serialise()
+            picklecreator.de_serialise_pickle("pickle")
         except FileNotFoundError as e:
             print(e)
 
-    def remove_pickle(self):
-        pickle = Pickler()
+    def remove_pickle(self, picklecreator: PickleCreator):
         try:
-            pickle.remove_pickle()
+            picklecreator.remove_pickle("pickle")
         except FileNotFoundError as e:
             print(e)
 
