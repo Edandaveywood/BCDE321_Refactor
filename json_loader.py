@@ -7,12 +7,6 @@ class JsonLoader:
         self.__filePath = path
         self.__helpTextDict = None
 
-    def filepath(self):
-        return self.__filePath
-
-    def help_text_dict(self):
-        return self.__helpTextDict
-
     def get_help_text(self, name):
         for x in self.__helpTextDict['helpText']:
             if x['functionName'] == name:
