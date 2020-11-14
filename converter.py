@@ -90,7 +90,6 @@ class Converter(ConverterBuilder):
     def make_pickle(self, picklecreator: PickleCreator):
         try:
             assert len(self._dict_of_elements.keys()) > 0
-            picklecreator.serialise_pickle(self._dict_of_elements, "pickle")
             self._uml.get_pickle(picklecreator.serialise_pickle(self._dict_of_elements, "pickle"))
         except FileNotFoundError as e:
             print(e)
@@ -99,13 +98,13 @@ class Converter(ConverterBuilder):
 
     def load_pickle(self, picklecreator: PickleCreator):
         try:
-            picklecreator.de_serialise_pickle("pickle")
+            self._uml.get_pickle(picklecreator.de_serialise_pickle("pickle"))
         except FileNotFoundError as e:
             print(e)
 
     def remove_pickle(self, picklecreator: PickleCreator):
         try:
-            picklecreator.remove_pickle("pickle")
+            self._uml.get_pickle(picklecreator.remove_pickle("pickle"))
         except FileNotFoundError as e:
             print(e)
 

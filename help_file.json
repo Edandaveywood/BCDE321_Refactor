@@ -8,6 +8,16 @@
     },
 
     {
+      "functionName": "load_pickle",
+      "helpText" : "Loads the previously saved pickle and displays in terminal \nSyntax: load_pickle"
+    },
+
+    {
+      "functionName": "remove_pickle",
+      "helpText" : "Removes the saved pickle from your HDD \nSyntax: remove_pickle"
+    },
+
+    {
       "functionName": "load_data",
       "helpText" : "Loads data from a provided Javascript file \nSyntax: load_data [file path]"
     },
@@ -20,36 +30,6 @@
     {
       "functionName": "convert_to_uml",
       "helpText" : "Converts extracted data and displays image \nSyntax: convert_to_uml"
-    },
-
-    {
-      "functionName": "read_js",
-      "helpText" : "Detects the loaded file is javaScript file \nSyntax: read_js [file path]"
-    },
-
-    {
-      "functionName": "pwd",
-      "helpText" : "Prints the working directory \nSyntax: pwd"
-    },
-
-    {
-      "functionName": "db_connect",
-      "helpText" : "Connects to Azure MySQL server and shows all databases for further use \nSyntax: db_connect"
-    },
-
-    {
-      "functionName": "db_info",
-      "helpText" : "Shows MySQL version \nSyntax: db_info"
-    },
-
-    {
-      "functionName": "table_select",
-      "helpText" : "To select a table you want to see with stored data \nSyntax: table_select [-options] \nOptions: \n-a: Select attributes table \n-m: Select methods table \n-i: Select all extracted class table"
-    },
-
-    {
-      "functionName": "wavi",
-      "helpText" : "Uses WAVI project to generate UML diagram \nSyntax: wavi [file path]"
     },
 
     {
