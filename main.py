@@ -15,16 +15,16 @@ class CommandLineInterface(Cmd):
         self.prompt = ">>> "
         self.intro = "This program will generate a class diagram from your JavaScript source code. " \
                      "Type help for a list of commands."
-        jloader = JsonLoader('help_file.json')
+        j_loader = JsonLoader('help_file.json')
         try:
-            jloader.open_file()
+            j_loader.open_file()
         except FileNotFoundError:
             print('There is no help file.')
-        self.jloader = jloader
+        self.j_loader = j_loader
         self._input_file = None
         self._director = Director()
         self._converter = Converter()
-        self._director.conbuilder = self._converter
+        self._director.con_builder = self._converter
         # self.do_load_data("JSTest2.js")  # test
 
     def default(self, arg):
@@ -34,7 +34,7 @@ class CommandLineInterface(Cmd):
         self._converter.make_pickle(Pickler())
 
     def help_create_pickle(self):
-        print(self.jloader.get_help_text('create_pickle'))
+        print(self.j_loader.get_help_text('create_pickle'))
 
     def do_load_pickle(self, arg):
         self._converter.load_pickle(Pickler())
@@ -46,7 +46,7 @@ class CommandLineInterface(Cmd):
         return True
 
     def help_exit(self):
-        print(self.jloader.get_help_text('exit'))
+        print(self.j_loader.get_help_text('exit'))
 
     def do_load_data(self, arg):
         try:
@@ -58,7 +58,7 @@ class CommandLineInterface(Cmd):
             print(e)
 
     def help_load_data(self):
-        print(self.jloader.get_help_text('load_data'))
+        print(self.j_loader.get_help_text('load_data'))
 
     def do_extract_data(self, arg):
         try:
@@ -68,7 +68,7 @@ class CommandLineInterface(Cmd):
             print(e)
 
     def help_extract_data(self):
-        print(self.jloader.get_help_text('extract_data'))
+        print(self.j_loader.get_help_text('extract_data'))
 
     def do_convert_to_uml(self, arg):
         try:
@@ -78,7 +78,7 @@ class CommandLineInterface(Cmd):
             print(e)
 
     def help_convert_to_uml(self):
-        print(self.jloader.get_help_text('convert_to_uml'))
+        print(self.j_loader.get_help_text('convert_to_uml'))
 
     # This is outside the scope of the original tests as I added it for the use of director for a faster UML creation.
     def do_convert_fast(self):
