@@ -31,12 +31,20 @@ class ConverterBuilder(ABC):
     def make_pickle(self, pickle_creator: PickleCreator):
         pass
 
+    @abstractmethod
+    def load_pickle(self, pickle_creator: PickleCreator):
+        pass
+
+    @abstractmethod
+    def remove_pickle(self, pickle_creator: PickleCreator):
+        pass
+
 
 class Converter(ConverterBuilder):
     def __init__(self):
-        self.ast = AstVisitor()
-        self.input_file = None
-        self.ast_data = None
+        self._ast = AstVisitor()
+        self._input_file = None
+        self._ast_data = None
         self._dict_of_elements = {}
         self.reset()
 
@@ -49,24 +57,24 @@ class Converter(ConverterBuilder):
         return uml
 
     def load_data(self, input_file):
-        self.input_file = input_file
+        self._input_file = input_file
         self._uml.get_input_file(input_file)
 
     def extract_data(self):
         file_contents = ""
         try:
-            with open(self.input_file, 'r') as f:
+            with open(self._input_file, 'r') as f:
                 for line in f:
                     file_contents += line
-            self.ast_data = parseScript(file_contents, delegate=self.ast)
+            self._ast_data = parseScript(file_contents, delegate=self._ast)
             print('Data has been extracted')
-            self._uml.get_ast_data(self.ast_data)
+            self._uml.get_ast_data(self._ast_data)
         except Exception as e:
             print('There was an error in the JavaScript file: ' + str(e))
 
     def get_dict(self):
-        self.ast.visit(self.ast_data)
-        self._dict_of_elements = self.ast.get_dict()
+        self._ast.visit(self._ast_data)
+        self._dict_of_elements = self._ast.get_dict()
         self._uml.get_dict(self._dict_of_elements)
 
     def convert_to_uml(self):
