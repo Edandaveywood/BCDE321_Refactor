@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 class PickleCreator(ABC):
     @abstractmethod
     def create_pickle(self):
-        pass
+        """"Creates a pickle object"""
 
     def serialise_pickle(self, to_pickle, pickle_file_name):
         pickle = self.create_pickle()
@@ -32,15 +32,15 @@ class Pickler(PickleCreator):
 class PickleFactory(ABC):
     @abstractmethod
     def serialise(self, to_pickle, pickle_file_name):
-        pass
+        """"Serialises a pickle"""
 
     @abstractmethod
     def de_serialise(self, pickle_file_name):
-        pass
+        """"De-serialises a pickle"""
 
     @abstractmethod
     def remove_pickle(self, pickle_file_name):
-        pass
+        """"Deletes pickle from HDD"""
 
 
 class Pickle(PickleFactory):

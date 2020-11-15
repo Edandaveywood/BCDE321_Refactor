@@ -9,35 +9,35 @@ class ConverterBuilder(ABC):
     @property
     @abstractmethod
     def uml(self):
-        pass
+        """Returns a UML object"""
 
     @abstractmethod
     def load_data(self, input_file):
-        pass
+        """Loads data from file"""
 
     @abstractmethod
     def extract_data(self):
-        pass
+        """Extracts loaded data"""
 
     @abstractmethod
     def get_dict(self):
-        pass
+        """Gets a dictionary of all relevant information"""
 
     @abstractmethod
     def convert_to_uml(self):
-        pass
+        """Converts UML to a png image"""
 
     @abstractmethod
     def make_pickle(self, pickle_creator: PickleCreator):
-        pass
+        """"Serialises a pickle"""
 
     @abstractmethod
     def load_pickle(self, pickle_creator: PickleCreator):
-        pass
+        """"De-serialises a pickle"""
 
     @abstractmethod
     def remove_pickle(self, pickle_creator: PickleCreator):
-        pass
+        """"Deletes pickle from HDD"""
 
 
 class Converter(ConverterBuilder):
@@ -94,27 +94,20 @@ class Converter(ConverterBuilder):
                      )
         s = Source(dot.source, filename="test.gv", format="png")
         self._uml.get_uml_source(s)
+        print("Conversion complete, opening now")
 
     def make_pickle(self, pickle_creator: PickleCreator):
         try:
             assert len(self._dict_of_elements.keys()) > 0
             self._uml.get_pickle(pickle_creator.serialise_pickle(self._dict_of_elements, "pickle"))
-        except FileNotFoundError as e:
-            print(e)
         except AssertionError:
             print('Dictionary is empty, try loading then extracting data first')
 
     def load_pickle(self, pickle_creator: PickleCreator):
-        try:
-            self._uml.get_pickle(pickle_creator.de_serialise_pickle("pickle"))
-        except FileNotFoundError as e:
-            print(e)
+        self._uml.get_pickle(pickle_creator.de_serialise_pickle("pickle"))
 
     def remove_pickle(self, pickle_creator: PickleCreator):
-        try:
-            self._uml.get_pickle(pickle_creator.remove_pickle("pickle"))
-        except FileNotFoundError as e:
-            print(e)
+        self._uml.get_pickle(pickle_creator.remove_pickle("pickle"))
 
 
 class Uml:

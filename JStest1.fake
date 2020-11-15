@@ -3,15 +3,18 @@ const STORAGE_KEY = 'CycleLogEdan';
 
 // FEATURE 1 - Create a whole, that acts as a Facade for parts
 class CycleLog { // eslint-disable-line no-unused-vars
-    constructor()
-        this.allMyRides = ;
+    constructor() {
+        this.allMyRides = [];
         // Attributes used for editing a ride
         this.editedRide = null;
         this.editedRideIndex = null;
-
+        this.beforeEditTitleCache = "";
+        this.beforeEditDistanceCache = "";
+        this.beforeEditDurationCache = "";
+    }
 
     // FEATURE 2 - Add a part
-    addRide ewTitle, newDate, newDuration, newDistance) {
+    addRide (newTitle, newDate, newDuration, newDistance) {
         newTitle = newTitle.trim();
         // FEATURE 10 - Validate inputs
         if (!newTitle) {
@@ -22,6 +25,8 @@ class CycleLog { // eslint-disable-line no-unused-vars
         let newKPH = 1;
         let aNewRide = new Ride(newId, newTitle, newDate, newDuration, newDistance, newKPH);
         aNewRide.calculateKPH();
+        this.allMyRides.push(aNewRide);
+    }
 
     // FEATURE 3 - Sort parts
     sortRides (input) {
@@ -37,7 +42,10 @@ class CycleLog { // eslint-disable-line no-unused-vars
                 })
                 break;
             case "inputDate":
-                this.allMyRides.sort((a, b)
+                this.allMyRides.sort((a, b) => {
+                    return a.startTime < b.startTime ? -1 : a.startTime > b.startTime ? 1 : 0;
+                })
+                break;
             case "inputTitle":
                 this.allMyRides.sort((a, b) => {
                     return a.title < b.title ? -1 : a.title > b.title ? 1 : 0;
